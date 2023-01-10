@@ -1,0 +1,20 @@
+.test-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+[role=listbox]
+div {
+  display: flex;
+  flex-direction: row;
+}
+
+/*.listbox {*/
+/*  display: flex;*/
+/*  flex-direction: row;*/
+/*}*/
+
+.input-container {
+  width: 100px;
+}
