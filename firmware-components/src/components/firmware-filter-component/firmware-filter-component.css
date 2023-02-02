@@ -18,46 +18,9 @@
   padding: 100px;
 }
 
-/*modus styling*/
-
-/*modus-select {*/
-/*  --display: flex;*/
-/*  --flex-direction: row;*/
-/*}*/
-
 .firmware-filter-select {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 8px;
 }
-
-/*.modus-select-listbox {*/
-/*  display: flex;*/
-/*  flex-direction: row;*/
-/*}*/
-
-/*.device-type-options {*/
-/*  display: flex;*/
-/*  flex-direction: row;*/
-/*  padding: 8px;*/
-/*}*/
-
-/*div[role=listbox] {*/
-/*  display: flex;*/
-/*  flex-direction: row;*/
-/*  align-items: center;*/
-/*}*/
-/*.input-container {*/
-/*  width: 80px;*/
-/*}*/
-
-/*#sc-modus-select {*/
-/*  display: flex;*/
-/*  flex-direction: row;*/
-/*}*/
-
-/*modus-select::role(listbox) {*/
-/*  display: flex;*/
-/*  flex-direction: row;*/
-/*}*/

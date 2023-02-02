@@ -14,6 +14,8 @@ export namespace Components {
     }
     interface MyComponent {
     }
+    interface TestComponent {
+    }
 }
 declare global {
     interface HTMLAddNewFirmwareComponentElement extends Components.AddNewFirmwareComponent, HTMLStencilElement {
@@ -40,11 +42,18 @@ declare global {
         prototype: HTMLMyComponentElement;
         new (): HTMLMyComponentElement;
     };
+    interface HTMLTestComponentElement extends Components.TestComponent, HTMLStencilElement {
+    }
+    var HTMLTestComponentElement: {
+        prototype: HTMLTestComponentElement;
+        new (): HTMLTestComponentElement;
+    };
     interface HTMLElementTagNameMap {
         "add-new-firmware-component": HTMLAddNewFirmwareComponentElement;
         "firmware-filter-component": HTMLFirmwareFilterComponentElement;
         "firmware-table-component": HTMLFirmwareTableComponentElement;
         "my-component": HTMLMyComponentElement;
+        "test-component": HTMLTestComponentElement;
     }
 }
 declare namespace LocalJSX {
@@ -56,11 +65,14 @@ declare namespace LocalJSX {
     }
     interface MyComponent {
     }
+    interface TestComponent {
+    }
     interface IntrinsicElements {
         "add-new-firmware-component": AddNewFirmwareComponent;
         "firmware-filter-component": FirmwareFilterComponent;
         "firmware-table-component": FirmwareTableComponent;
         "my-component": MyComponent;
+        "test-component": TestComponent;
     }
 }
 export { LocalJSX as JSX };
@@ -71,6 +83,7 @@ declare module "@stencil/core" {
             "firmware-filter-component": LocalJSX.FirmwareFilterComponent & JSXBase.HTMLAttributes<HTMLFirmwareFilterComponentElement>;
             "firmware-table-component": LocalJSX.FirmwareTableComponent & JSXBase.HTMLAttributes<HTMLFirmwareTableComponentElement>;
             "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "test-component": LocalJSX.TestComponent & JSXBase.HTMLAttributes<HTMLTestComponentElement>;
         }
     }
 }

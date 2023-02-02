@@ -27,3 +27,6 @@ See docs here for more information on getting started: https://github.com/ionic-
 
 ## Hosting on Azure
 CDN
+
+## EventBus
+You will need to remember to update the mfe-eventbus npm package to the relevant version when running the pipeline.

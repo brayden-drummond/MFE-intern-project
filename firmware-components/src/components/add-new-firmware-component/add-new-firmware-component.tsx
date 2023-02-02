@@ -1,4 +1,9 @@
 import {Component, h, State, Watch} from '@stencil/core';
+import {
+  Topics,
+  requestAuthenticationFromParent,
+  listenForAuthenticationFromParent, dispatchNewFirmwareToListener
+} from "mfe-eventbus"
 
 @Component({
   tag: 'add-new-firmware-component',
@@ -6,6 +11,7 @@ import {Component, h, State, Watch} from '@stencil/core';
 })
 
 export class AddNewFirmwareComponent {
+
   @State() token: string = ''
   @State() firmwareVersion: string;
   @State() deviceType: string;
@@ -19,7 +25,6 @@ export class AddNewFirmwareComponent {
     { display: 'EC520' },
     { display: 'Test' }
   ]
-  @State() eventBus = null;
 
   statusOptions = [
     { display: 'New'}
@@ -27,19 +32,14 @@ export class AddNewFirmwareComponent {
 
   @Watch('token')
   async componentWillLoad() {
-    if (window.EventBus) {
-      this.eventBus = window.EventBus;
-    } else {
-      console.log("No EventBus defined!")
-    }
 
     if (!this.token) {
-      this.eventBus.requestAuthenticationFromParent()
-      }
+      requestAuthenticationFromParent()
+    }
 
-    this.eventBus.listenForAuthenticationFromParent(async (event:MessageEvent) => {
+    listenForAuthenticationFromParent(async (event:MessageEvent) => {
       this.token = event.data.token
-    }, [this.eventBus.Topics.MFE_FIRMWARE_CHILD_AUTH_REQUEST]);
+    }, [Topics.MFE_FIRMWARE_CHILD_AUTH_REQUEST]);
   }
 
   componentDidRender() {
@@ -84,7 +84,7 @@ export class AddNewFirmwareComponent {
       description: this.description,
       vendorMetadata: this.vendorMetadata,
       firmwareFile: this.firmwareFile}
-    this.eventBus.dispatchNewFirmwareToListener(this.newFirmware)
+    dispatchNewFirmwareToListener(this.newFirmware)
     this.postFirmwareToDatabase(this.newFirmware)
     document.querySelector('modus-modal').close()
   }
@@ -101,10 +101,11 @@ export class AddNewFirmwareComponent {
     });
   }
 
-  render() {
+   render() {
     return <div>
       <modus-button id="firmware-modal-btn">Add</modus-button>
       <modus-modal
+        id="my-modal"
         header-text="Upload Firmware"
         primary-button-text="Submit"
         onPrimaryButtonClick={(event) => this.handleSubmit(event)}>

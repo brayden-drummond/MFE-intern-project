@@ -73,3 +73,6 @@ The first step for all three of these strategies is to [publish to NPM](https://
 - Run `npm install my-component --save`
 - Add an import to the npm packages `import my-component;`
 - Then you can use the element anywhere in your template, JSX, html etc
+
+### Running the pipeline
+When changes have been pushed and you are creating a pull request, you will need to run the pipeline to test, build and deploy the firmware components build folder to an Azure CDN. When the pipeline gets to the deploy stage, you will need to select the job in Azure pipelines and follow the instruction to log in. You should receive a code and relevant link in this stage in the Azure Pipeline to activate the Azure CLI. Once the Azure CLI has been activated, you should see the build files being pushed into the Azure blob storage.

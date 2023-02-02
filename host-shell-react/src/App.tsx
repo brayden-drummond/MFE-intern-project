@@ -1,16 +1,21 @@
 import React, {useEffect} from 'react';
 import './App.css';
 
+import {
+    listenForAuthenticationRequest,
+    dispatchAuthenticationTokenToListener
+} from "mfe-eventbus"
+
 const App = () => {
 
     const [formData, setFormData] = React.useState('')
     const [token, setToken] = React.useState('')
 
-    window.EventBus.listenForAuthenticationRequest();
+    listenForAuthenticationRequest();
 
     useEffect(() => {
         if (token) {
-            window.EventBus.dispatchAuthenticationTokenToListener(token)
+            dispatchAuthenticationTokenToListener(token)
         }
     }, [token])
 

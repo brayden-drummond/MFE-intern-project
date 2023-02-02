@@ -19,10 +19,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "typeRoots": ["node_modules/@types", "../event-bus-iife/types/app.d.ts"]
+    "typeRoots": ["node_modules/@types",
+      "../event-bus/types/app.d.ts"
+    ]
   },
   "include": [
     "src",
-    "../event-bus-iife/types"
+    "../event-bus/types"
   ]
 }

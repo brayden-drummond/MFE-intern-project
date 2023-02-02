@@ -1,22 +1,22 @@
 {
-  "name": "test-iife-typescript",
-  "version": "1.0.0",
+  "name": "mfe-eventbus",
+  "version": "1.0.20",
   "description": "",
   "main": "rollup.config.js",
   "type": "module",
   "scripts": {
-    "build": "rollup -c rollup.config.js",
+    "build": "tsc && rollup -c rollup.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-typescript": "^10.0.1",
-    "rollup-plugin-babel": "^4.4.0"
+    "rollup": "^3.12.0"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.0",
     "rollup-plugin-typescript2": "^0.34.1",
     "tslib": "^2.4.1",
     "typescript": "^4.9.4"

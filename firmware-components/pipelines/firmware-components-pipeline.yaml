@@ -1,0 +1,41 @@
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - bash: az --version
+    displayName: 'Show Azure CLI version'
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '16.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      cd firmware-components
+      npm install
+    displayName: 'Run npm install'
+
+  - script: |
+      cd firmware-components
+      npm test
+    displayName: 'Run unit tests'
+
+  - script: |
+      cd firmware-components
+      npm run build
+    displayName: 'Run npm build'
+
+#https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website-how-to?tabs=azure-cli
+  - bash: |
+      az login --tenant $(TENANT_ID)
+      az account set --subscription 5d663642-f863-410b-be88-998c8059be0f
+      az storage blob service-properties update --account-name storwk63xafymxmsc --static-website --auth-mode login
+      az storage blob upload-batch -s firmware-components/dist -d '$web' --account-name storwk63xafymxmsc --overwrite
+      az storage account show -n storwk63xafymxmsc -g stencil-web-component --query "primaryEndpoints.web" --output tsv
+    displayName: 'Enable static web hosting and publish'
+
+
+

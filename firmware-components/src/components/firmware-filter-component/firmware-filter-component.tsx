@@ -1,5 +1,11 @@
 import {Component, h, State} from '@stencil/core';
-// import EventBus from '../../eventbus/index.js'
+import {
+  dispatchInitialFilterOptionsToListener,
+  dispatchUpdatedFilterOptionsToListener,
+  listenForAuthenticationFromParent,
+  requestAuthenticationFromParent,
+  Topics
+} from "mfe-eventbus"
 
 @Component({
   tag: 'firmware-filter-component',
@@ -7,30 +13,25 @@ import {Component, h, State} from '@stencil/core';
   shadow: false,
 })
 export class FirmwareFilterComponent {
+
   @State() token: string = '';
   @State() selectedDeviceTypeOptions: any[];
   @State() selectedDeviceStatusOptions: any[];
   @State() selectedDeviceType: string = 'EC520';
   @State() selectedDeviceStatus: string = 'Released';
   @State() selectedFilter: {type: string, status: string;} = {type: 'EC520', status: 'Released'};
-  @State() eventBus = null;
 
   componentWillLoad() {
-    if (window.EventBus) {
-      this.eventBus = window.EventBus;
-    } else {
-      console.log('Please use an event bus')
-    }
 
-    this.eventBus.dispatchInitialFilterOptionsToListener(this.selectedFilter)
+    dispatchInitialFilterOptionsToListener(this.selectedFilter)
 
     if (!this.token) {
-      this.eventBus.requestAuthenticationFromParent()
+      requestAuthenticationFromParent()
     }
 
-    this.eventBus.listenForAuthenticationFromParent(async (event:MessageEvent) => {
+    listenForAuthenticationFromParent(async (event:MessageEvent) => {
       this.token = event.data.token
-    }, [this.eventBus.Topics.MFE_FIRMWARE_CHILD_AUTH_REQUEST]);
+    }, [Topics.MFE_FIRMWARE_CHILD_AUTH_REQUEST]);
   }
 
   componentWillUpdate() {
@@ -58,11 +59,11 @@ export class FirmwareFilterComponent {
   handleSubmit(event) {
     event.preventDefault()
     this.selectedFilter = {...this.selectedFilter, type: this.selectedDeviceType, status: this.selectedDeviceStatus}
-    this.eventBus.dispatchUpdatedFilterOptionsToListener(this.selectedFilter)
+    dispatchUpdatedFilterOptionsToListener(this.selectedFilter)
   }
 
-  componentDidLoad() {
-    const deviceType = document.getElementById('device-type-options').shadowRoot.querySelector('div')
+  getStyles() {
+    const deviceType = document.getElementById('device-type-options').shadowRoot?.querySelector('div')
     deviceType.style.display = 'flex'
     deviceType.style.flexDirection = 'row'
     deviceType.style.alignItems  = 'center'
@@ -70,12 +71,16 @@ export class FirmwareFilterComponent {
     const deviceTypeSelectField = deviceType.querySelectorAll('div')[1]
     deviceTypeSelectField.style.width = '90px'
 
-    const deviceStatus = document.getElementById('device-status-options').shadowRoot.querySelector('div')
+    const deviceStatus = document.getElementById('device-status-options').shadowRoot?.querySelector('div')
     deviceStatus.style.display = 'flex'
     deviceStatus.style.flexDirection = 'row'
     deviceStatus.style.alignItems  = 'center'
     const deviceStatusSelectField = deviceStatus.querySelectorAll('div')[1]
     deviceStatusSelectField.style.width = '90px'
+  }
+
+  componentDidLoad() {
+    this.getStyles()
   }
 
   render() {

@@ -7,9 +7,11 @@
     "lib": ["es2017", "dom"],
     "strict": true,
     "esModuleInterop": false,
-    "outDir": "output/types",
+    "outDir": "output",
     "rootDir": "./",
-    "declaration": true
+    "declaration": true,
+    "typeRoots": ["src"],
+
   }
 ,
   "include": ["./**/*.ts", "rollup.config.js"],

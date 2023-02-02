@@ -1,6 +1,16 @@
 import {Component, h, State, Watch} from '@stencil/core';
 import {ModusDataTableDisplayOptions} from "@trimble-oss/modus-web-components";
-interface FirmwareResponse {
+import {
+  Topics,
+  requestAuthenticationFromHost,
+  requestDefaultFilterOptions,
+  authenticationListener,
+  filterOptionsListener,
+  newFirmwareListener,
+  dispatchAuthenticationTokenToChild
+} from "mfe-eventbus"
+
+export interface FirmwareResponse {
   createdDate: string,
   firmwareId: string,
   status: string,
@@ -25,7 +35,6 @@ export class FirmwareTableComponent {
     'Status',
     'Created Date'
   ]
-
   rowData: any[]
 
   //Get Bearer token from WorksOS
@@ -35,36 +44,36 @@ export class FirmwareTableComponent {
   @State() selectedFilter: {type: string, status: string}
   @State() tableDisplay: ModusDataTableDisplayOptions = {borderless: false, cellBorderless: true, rowStripe: true}
   @State() newFirmware: {createdDate: string, firmwareVersion: string, deviceType: string, status: string, description: string, vendorMetadata: string, firmwareFile: string}
-  @State() eventBus = null;
 
-  @Watch('selectedFilter')
-  @Watch('token')
-  async componentWillLoad() {
-    if (window.EventBus) {
-      this.eventBus = window.EventBus;
-    } else {
-      console.log("No EventBus defined!")
-    }
-
+  setAttributes() {
     if (!this.token) {
-      this.eventBus.requestAuthenticationFromHost()
+      requestAuthenticationFromHost()
     }
 
     if (!this.selectedFilter) {
-      this.eventBus.requestDefaultFilterOptions()
+      requestDefaultFilterOptions()
     }
+  }
 
-    this.eventBus.authenticationListener(async (event: MessageEvent) => {
+  setAuthentication() {
+    authenticationListener(async (event: MessageEvent) => {
       this.token = event.data.token
-    }, [this.eventBus.Topics.MFE_FIRMWARE_TABLE_AUTH_REQUEST]);
+    }, [Topics.MFE_FIRMWARE_TABLE_AUTH_REQUEST]);
 
-    this.eventBus.filterOptionsListener(async (event: MessageEvent) => {
+    filterOptionsListener(async (event: MessageEvent) => {
       this.selectedFilter = event.data.selectedFilter
-    }, [this.eventBus.Topics.MFE_FIRMWARE_TABLE_FILTER_REQUEST])
+    }, [Topics.MFE_FIRMWARE_TABLE_FILTER_REQUEST])
 
-    this.eventBus.newFirmwareListener(async (event: MessageEvent) => {
+    newFirmwareListener(async (event: MessageEvent) => {
       this.newFirmware = event.data.newFirmware
-    }, [this.eventBus.Topics.MFE_NEW_FIRMWARE_REQUEST])
+    }, [Topics.MFE_NEW_FIRMWARE_REQUEST])
+
+  }
+  @Watch('selectedFilter')
+  @Watch('token')
+  async componentWillLoad() {
+    this.setAttributes();
+    this.setAuthentication();
 
     if (this.token && this.selectedFilter) {
       const response = await fetch(`https://cloud.stage.api.trimblecloud.com/WorksOS/firmware/1.0/firmware?deviceType=${this.selectedFilter.type}&status=${this.selectedFilter.status}`, {headers: {'Authorization': this.token}})
@@ -74,7 +83,7 @@ export class FirmwareTableComponent {
         const data = await response.json()
         this.tableData = [...data as FirmwareResponse[]]
         this.errorMessage = ''
-        this.eventBus.dispatchAuthenticationTokenToChild(this.token)
+        dispatchAuthenticationTokenToChild(this.token)
       }
     }
   }
